@@ -35,7 +35,7 @@ public class DiscountEditorController extends HttpServlet {
 		action = (action == null) ? "" : action; // Pour le switch qui n'aime pas les null
 		String code = request.getParameter("code");
 		String taux = request.getParameter("taux");
-                
+       
 		try {
 			DAO dao = new DAO(DataSourceFactory.getDataSource());
 			request.setAttribute("codes", dao.allCodes());			
