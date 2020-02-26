@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.DAO;
 import model.DataSourceFactory;
+import model.DiscountCode;
 
 /**
  * Le contrôleur de l'application
@@ -34,6 +35,7 @@ public class DiscountEditorController extends HttpServlet {
 		action = (action == null) ? "" : action; // Pour le switch qui n'aime pas les null
 		String code = request.getParameter("code");
 		String taux = request.getParameter("taux");
+                
 		try {
 			DAO dao = new DAO(DataSourceFactory.getDataSource());
 			request.setAttribute("codes", dao.allCodes());			
@@ -52,6 +54,16 @@ public class DiscountEditorController extends HttpServlet {
 						request.setAttribute("message", "Impossible de supprimer " + code + ", ce code est utilisé.");
 					}
 					break;
+                                case "UPDATE": // Requête de mise à jour
+                                        try {
+                                                
+                                                DiscountCode discountCode = new DiscountCode(code,Float.parseFloat(taux));
+						dao.updateDiscount(discountCode);
+                                                request.setAttribute("message", "Code " + code + " Modifié");
+						request.setAttribute("codes", dao.allCodes());	
+                                        } catch (SQLIntegrityConstraintViolationException e) {
+						request.setAttribute("message", "Impossible de modifier " + code + ", ce code est utilisé.");
+					}
 			}
 		} catch (Exception ex) {
 			Logger.getLogger("discountEditor").log(Level.SEVERE, "Action en erreur", ex);
